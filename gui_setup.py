@@ -166,8 +166,3 @@ class SettingsWindow(QWidget):
         self.ocr_thread.start()
 
         self.close()
-
-    # THE FIX: The closeEvent function that was forcing the application to quit
-    # has been removed. Now, closing this window will not terminate the app
-    # because of the 'setQuitOnLastWindowClosed(False)' setting in your main file.
-

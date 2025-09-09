@@ -1,7 +1,7 @@
 import cv2
 from PIL import ImageGrab
 import numpy as np
-import easyocr  # The new OCR library
+import easyocr
 import json
 import time
 import re
@@ -23,14 +23,12 @@ class OcrEngine:
             self.engine_ok = False
             return
 
-            # --- NEW: Initialize EasyOCR ---
         print("Initializing EasyOCR... (This may take a moment)")
         # This is the line that will trigger the one-time model download.
         self.reader = easyocr.Reader(['en'])
         print("EasyOCR initialized successfully.")
         self.engine_ok = True
 
-        # --- NEW: Clear the status message from the overlay ---
         self.overlay.clear_outcomes()
 
         # State Management
@@ -99,8 +97,6 @@ class OcrEngine:
                             region['top'] + region['height'])
                     img_pil = ImageGrab.grab(bbox=bbox)
                     img_np = np.array(img_pil)
-
-                    # --- OCR with EasyOCR ---
                     results = self.reader.readtext(img_np)
                     # Combine results into a single string
                     text = ' '.join([res[1] for res in results])

@@ -1,5 +1,4 @@
 import sqlite3
-# import requests
 import re
 import time
 
@@ -15,11 +14,9 @@ from selenium.common.exceptions import WebDriverException, TimeoutException
 
 
 def scrape_event_data():
-    """
-    Scrapes a wiki page for event data using Selenium by mapping hidden tooltip
-    data to visible event triggers based on matching text content.
-    """
     # --- CONFIGURATION ---
+    # ONLY UTILIZE GAMETORA LINKS. ANY OTHER WIKI/DBs MAY NOT WORK PROPERLY
+    # MAKE SURE THE LINK HAS AN ID ASSOCIATED WITH THE HORSE NAME
     URL = "https://gametora.com/umamusume/characters/100101-special-week"
     CHARACTER_NAME = "Special Week"
 
@@ -68,12 +65,12 @@ def scrape_event_data():
             f.write(page_source)
         print("Saved page content to debug_page.html for inspection.")
 
-    except TimeoutException:
-        print("\n--- A SELENIUM TIMEOUT ERROR OCCURRED ---")
-        return []
-    except WebDriverException as e:
-        print(f"\n--- A SELENIUM WEBDRIVER ERROR OCCURRED ---\n{e}")
-        return []
+    # except TimeoutException:
+    #     print("\n--- A SELENIUM TIMEOUT ERROR OCCURRED ---")
+    #     return []
+    # except WebDriverException as e:
+    #     print(f"\n--- A SELENIUM WEBDRIVER ERROR OCCURRED ---\n{e}")
+    #     return []
     except Exception as e:
         print(f"An unexpected error occurred during Selenium operation: {e}")
         return []
@@ -104,14 +101,14 @@ def scrape_event_data():
             tooltips_map[cleaned_title] = tooltip
 
     print(f"Found and mapped {len(tooltips_map)} hidden tooltip data blocks.")
-    if not tooltips_map:
-        print("CRITICAL FAILURE: Could not find any tooltips to build the data map.")
-        return []
+    # if not tooltips_map:
+    #     print("CRITICAL FAILURE: Could not find any tooltips to build the data map.")
+    #     return []
 
     event_triggers = soup.select('div[class*="compatibility_viewer_item__"]')
-    if not event_triggers:
-        print("Could not find any event trigger items. The class name 'compatibility_viewer_item__' may have changed.")
-        return []
+    # if not event_triggers:
+    #     print("Could not find any event trigger items. The class name 'compatibility_viewer_item__' may have changed.")
+    #     return []
 
     print(f"Found {len(event_triggers)} potential event triggers to process.")
 
@@ -126,7 +123,6 @@ def scrape_event_data():
             if not table:
                 continue
 
-            # THE FIX: Process all <tr> rows, not skipping the first one.
             option_rows = table.find_all("tr")
 
             for i, row in enumerate(option_rows):
@@ -159,7 +155,6 @@ if event_data:
         cur = con.cursor()
         print("Successfully connected to database.")
         cur.execute("DROP TABLE IF EXISTS events")
-        # THE FIX: Wrap all column names in double quotes to prevent syntax errors.
         cur.execute('''
             CREATE TABLE events (
                 "character_name" TEXT NOT NULL,
@@ -179,4 +174,3 @@ if event_data:
             print("Database connection closed.")
 else:
     print("No data was scraped, database was not created.")
-
