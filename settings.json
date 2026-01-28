@@ -1,0 +1,15 @@
+{
+    "character_region": {
+        "top": 312,
+        "left": 268,
+        "width": 254,
+        "height": 70
+    },
+    "event_region": {
+        "top": 129,
+        "left": 146,
+        "width": 285,
+        "height": 90
+    },
+    "tesseract_path": "C:/Program Files/Tesseract-OCR/tesseract.exe"
+}
